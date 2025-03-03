@@ -12,6 +12,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //Creation d'une instance de StudentService
 builder.Services.AddScoped<StudentService>();
+//Creation d'une instance de CoursController
+builder.Services.AddScoped<CoursService>();
 
 // Ajouter la configuration pour EF Core
 builder.Services.AddDbContext<AppDbContext>(options =>
