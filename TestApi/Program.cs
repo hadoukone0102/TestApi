@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TestApi.Data;
+using TestApi.Interfaces;
 using TestApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +12,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //Creation d'une instance de StudentService
-builder.Services.AddScoped<StudentService>();
+builder.Services.AddScoped<IStudentService, StudentService>();
+//Creation d'une instance de AuthService
+builder.Services.AddScoped<IAuthService, AuthService>();
 //Creation d'une instance de CoursController
 builder.Services.AddScoped<CoursService>();
 

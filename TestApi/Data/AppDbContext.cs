@@ -15,6 +15,8 @@ namespace TestApi.Data
 
         // Create a DbSet for the Cours model
         public DbSet<Models.Cours> Courses { get; set; }
+        // Create a DbSet for the User
+        public DbSet<Models.User> Users { get; set; }
 
     }
 }

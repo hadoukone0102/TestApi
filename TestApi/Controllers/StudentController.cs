@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TestApi.DTOs.students;
+using TestApi.Helpers;
+using TestApi.Interfaces;
 using TestApi.Models;
 using TestApi.Services;
 
@@ -10,60 +13,63 @@ namespace TestApi.Controllers
     public class StudentController : ControllerBase
     {
         // variable
-        private readonly StudentService _studentService;
+        private readonly IStudentService _studentService;
         // Constructor
-        public StudentController(StudentService studentService)
+        public StudentController(IStudentService studentService)
         {
             _studentService = studentService;
         }
         // Get all students
         [HttpGet]
-        public async Task<ActionResult<List<StudentTest>>> GetStudents()
+        public async Task<IActionResult> GetStudents()
         {
-            return await _studentService.GetStudents();
+            var students = await _studentService.GetStudents();
+            return Ok(new ApiResponse<List<StudentDto>>(true,"Liste des étudiant récupérer avec succès",students));
         }
         // Get student by id
         [HttpGet]
         [Route("{id}")]
-        public async Task<ActionResult<StudentTest>> GetStudent(int id)
+        public async Task<IActionResult> GetStudent(int id)
         {
             var student = await _studentService.GetStudent(id);
             if (student == null)
             {
                 return NotFound();
             }
-            return student;
+            return Ok(new ApiResponse<StudentDto>(true,"Etudiant récupérer avec succès",student));
         }
         // Create student
         [HttpPost]
-        public async Task<ActionResult<StudentTest>> CreateStudent(StudentTest student)
+        public async Task<IActionResult> CreateStudent([FromBody] StudentDto studentDto)
         {
-            var newStudent = await _studentService.CreateStudent(student);
-            return CreatedAtAction(nameof(GetStudent), new { id = newStudent.Id }, newStudent);
+            var newStudent = await _studentService.CreateStudent(studentDto);
+            return CreatedAtAction(nameof(GetStudent), new { id = studentDto.FirstName },
+                new ApiResponse<StudentDto>(true, "Etudiant créer avec succès", newStudent)
+            );
         }
         // Update student
         [HttpPut]
         [Route("{id}")]
-        public async Task<ActionResult<StudentTest>> UpdateStudent(int id, StudentTest student)
+        public async Task<IActionResult> UpdateStudent(int id,[FromBody] StudentDto studentDto)
         {
-            var updatedStudent = await _studentService.UpdateStudent(id, student);
+            var updatedStudent = await _studentService.UpdateStudent(id, studentDto);
             if (updatedStudent == null)
             {
                 return NotFound();
             }
-            return updatedStudent;
+            return Ok(new ApiResponse<StudentDto>(true,"Etudiant mis à jour avec succès.",updatedStudent));
         }
         // Delete student
         [HttpDelete]
         [Route("{id}")]
-        public async Task<ActionResult<StudentTest>> DeleteStudent(int id)
+        public async Task<IActionResult> DeleteStudent(int id)
         {
             var student = await _studentService.DeleteStudent(id);
             if (student == null)
             {
                 return NotFound();
             }
-            return student;
+            return Ok(new ApiResponse<StudentDto>(true,"",student));
         }
     }
 }
